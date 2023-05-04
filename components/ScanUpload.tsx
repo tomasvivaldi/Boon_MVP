@@ -11,22 +11,41 @@ import {
   CssBaseline,
   FormControlLabel,
   Grid,
+  IconButton,
   Link,
   Paper,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+const handleClose = () => {
+  // Add your close functionality here
+  console.log("Close button clicked");
+};
 
 function ScanUpload() {
   return (
     <div>
       <CssBaseline />
       <AppBar position="relative" sx={{ backgroundColor: "#4E4B66" }}>
-        <Toolbar>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6" color="inherit" noWrap>
             Scan and Upload Invoices
           </Typography>
+          <IconButton edge="end" color="inherit" onClick={handleClose}>
+            <Box
+              sx={{
+                alignSelf: "stretch",
+                borderLeft: "0.5px solid",
+                borderColor: "white",
+                mr: 2,
+                height: 32,
+              }}
+            />
+            <CloseIcon fontSize="medium" />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
