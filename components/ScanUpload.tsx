@@ -25,6 +25,11 @@ const handleClose = () => {
   console.log("Close button clicked");
 };
 
+const handleSubmit = () => {
+  // Add your close functionality here
+  console.log("Submit button clicked");
+};
+
 function ScanUpload() {
   return (
     <div>
@@ -34,18 +39,20 @@ function ScanUpload() {
           <Typography variant="h6" color="inherit" noWrap>
             Scan and Upload Invoices
           </Typography>
-          <IconButton edge="end" color="inherit" onClick={handleClose}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Box
               sx={{
                 alignSelf: "stretch",
                 borderLeft: "0.5px solid",
                 borderColor: "white",
-                mr: 2,
-                height: 32,
+                mr: 1,
+                height: 40,
               }}
             />
-            <CloseIcon fontSize="medium" />
-          </IconButton>
+            <IconButton edge="end" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="medium" />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -127,33 +134,101 @@ function ScanUpload() {
               <Typography component="h3" variant="h6">
                 Vendor
               </Typography>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="vendor"
-                name="vendor"
-                inputProps={{
-                  style: {
-                    height: "100px",
-                  },
+              <Box
+                sx={{
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: "4px",
+                  overflow: "hidden",
                 }}
-              />
+              >
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                />
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderRadius: 0,
+                      borderLeft: "none",
+                      borderRight: "none",
+                    },
+                  }}
+                />
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                />
+              </Box>
               <Typography component="h3" variant="h6">
                 Purpose
               </Typography>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="vendor"
-                id="vendor"
-                inputProps={{
-                  style: {
-                    height: "100px",
-                  },
+              <Box
+                sx={{
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: "4px",
+                  overflow: "hidden",
                 }}
-              />
+              >
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  }}
+                />
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderRadius: 0,
+                      borderLeft: "none",
+                      borderRight: "none",
+                    },
+                  }}
+                />
+              </Box>
             </Box>
             <Box
               sx={{
@@ -168,6 +243,7 @@ function ScanUpload() {
                 type="submit"
                 variant="contained"
                 sx={{ width: "fit-content" }}
+                onClick={handleSubmit}
               >
                 Submit
               </Button>
