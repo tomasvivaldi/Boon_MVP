@@ -110,14 +110,7 @@ function ScanUpload() {
             </Box>
           </Container>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={6}
-          component={Paper}
-          sx={{ height: "100%" }}
-        >
+        <Grid item xs={12} sm={6} md={6} sx={{ height: "100%", border: 0 }}>
           <Box
             sx={{
               my: 8,
@@ -130,8 +123,8 @@ function ScanUpload() {
             <Typography component="h2" variant="h5">
               New Bill
             </Typography>
-            <Box component="form" noValidate sx={{ mt: 4 }}>
-              <Typography component="h3" variant="h6">
+            <Box component="form" noValidate mt={2}>
+              <Typography component="h3" variant="body1" my={2}>
                 Vendor
               </Typography>
               <Box
@@ -188,7 +181,7 @@ function ScanUpload() {
                   }}
                 />
               </Box>
-              <Typography component="h3" variant="h6" mt={6}>
+              <Typography component="h3" variant="body1" mt={2} my={2}>
                 Purpose
               </Typography>
               <Box
