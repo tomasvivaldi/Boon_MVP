@@ -140,6 +140,7 @@ function ScanUpload() {
                   borderColor: "divider",
                   borderRadius: "4px",
                   overflow: "hidden",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <TextField
@@ -187,7 +188,7 @@ function ScanUpload() {
                   }}
                 />
               </Box>
-              <Typography component="h3" variant="h6">
+              <Typography component="h3" variant="h6" mt={6}>
                 Purpose
               </Typography>
               <Box
@@ -196,6 +197,7 @@ function ScanUpload() {
                   borderColor: "divider",
                   borderRadius: "4px",
                   overflow: "hidden",
+                  backgroundColor: "#FCFCFC",
                 }}
               >
                 <TextField
@@ -225,6 +227,20 @@ function ScanUpload() {
                       borderRadius: 0,
                       borderLeft: "none",
                       borderRight: "none",
+                    },
+                  }}
+                />
+                <TextField
+                  disabled
+                  margin="none"
+                  required
+                  fullWidth
+                  id="vendor"
+                  name="vendor"
+                  sx={{
+                    py: 0,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
                     },
                   }}
                 />
