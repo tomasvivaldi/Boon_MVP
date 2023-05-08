@@ -2,6 +2,12 @@
 import React from "react";
 import Image from "next/image";
 import {
+  appBarStyles,
+  containerStyles,
+  uploadBoxStyles,
+  tableContainerStyles,
+} from "@/styles/ScanUpload.styles";
+import {
   AppBar,
   Avatar,
   Box,
@@ -14,6 +20,12 @@ import {
   IconButton,
   Link,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Toolbar,
   Typography,
@@ -30,11 +42,24 @@ const handleSubmit = () => {
   console.log("Submit button clicked");
 };
 
+const mockData = [
+  {
+    vendorName: "Name of Vendor",
+    vendorContact: "+11 222-333-4444",
+    vendorAddress: "3654 Mckee Road San Jose, CA 95127",
+    invoiceNumber: "123",
+    quickbooksLocation: "location1",
+    date: "2023-05-08",
+    category: "cat1",
+    vin: "1ABCDEFGH23456789",
+  },
+];
+
 function ScanUpload() {
   return (
     <div>
       <CssBaseline />
-      <AppBar position="relative" sx={{ backgroundColor: "#4E4B66" }}>
+      <AppBar position="relative" sx={{ ...appBarStyles }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6" color="inherit" noWrap>
             Scan and Upload Invoices
@@ -66,18 +91,7 @@ function ScanUpload() {
       >
         <CssBaseline />
         <Grid item xs={12} sm={6} md={6} sx={{ p: "10px", height: "100%" }}>
-          <Container
-            sx={{
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: "#EFF5FF",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
+          <Container sx={{ ...containerStyles }}>
             <Box
               sx={{
                 width: "380px",
@@ -94,9 +108,9 @@ function ScanUpload() {
             >
               <Image
                 src="/upload-icon.svg"
-                alt="Your Image Description"
-                width={25} // Set the image width
-                height={25} // Set the image height
+                alt="Upload Icon"
+                width={25}
+                height={25}
               />
               <Typography
                 sx={{
@@ -127,136 +141,96 @@ function ScanUpload() {
               <Typography component="h3" variant="body1" my={2}>
                 Vendor
               </Typography>
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                  backgroundColor: "#FCFCFC",
-                }}
-              >
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  }}
-                />
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderRadius: 0,
-                      borderLeft: "none",
-                      borderRight: "none",
-                    },
-                  }}
-                />
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  }}
-                />
-              </Box>
-              <Typography component="h3" variant="body1" mt={2} my={2}>
-                Purpose
-              </Typography>
-              <Box
-                sx={{
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                  backgroundColor: "#FCFCFC",
-                }}
-              >
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  }}
-                />
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderRadius: 0,
-                      borderLeft: "none",
-                      borderRight: "none",
-                    },
-                  }}
-                />
-                <TextField
-                  disabled
-                  margin="none"
-                  required
-                  fullWidth
-                  id="vendor"
-                  name="vendor"
-                  sx={{
-                    py: 0,
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  }}
-                />
-              </Box>
+              <TableContainer sx={{ ...tableContainerStyles }}>
+                <Table aria-label="simple table">
+                  <TableBody>
+                    {mockData.map((row) => {
+                      return (
+                        <>
+                          <TableRow>
+                            <TableCell>
+                              <strong>Vendor Name: </strong>
+                              {row.vendorName ? row.vendorName : "\u00A0"}
+                            </TableCell>
+                            <TableCell>
+                              <strong>Vendor Contact: </strong>
+                              {row.vendorContact ? row.vendorContact : "\u00A0"}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell colSpan={2}>
+                              <strong>Vendor Address: </strong>
+                              {row.vendorAddress ? row.vendorAddress : "\u00A0"}
+                            </TableCell>
+                          </TableRow>
+                        </>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                mt: 3,
-                mb: 2,
-              }}
+            <Typography component="h3" variant="body1" mt={2} my={2}>
+              Purpose
+            </Typography>
+
+            <TableContainer sx={{ ...tableContainerStyles }}>
+              <Table aria-label="simple table">
+                <TableBody>
+                  {mockData.map((row) => {
+                    return (
+                      <>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Invoice Number:</strong>{" "}
+                            {row.invoiceNumber ? row.invoiceNumber : "\u00A0"}
+                          </TableCell>
+                          <TableCell>
+                            <strong>Quickbooks Location:</strong>{" "}
+                            {row.quickbooksLocation
+                              ? row.quickbooksLocation
+                              : "\u00A0"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>Date:</strong>{" "}
+                            {row.date ? row.date : "\u00A0"}
+                          </TableCell>
+                          <TableCell>
+                            <strong>Category:</strong>{" "}
+                            {row.category ? row.category : "\u00A0"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <strong>VIN:</strong> {row.vin ? row.vin : "\u00A0"}
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 3,
+              mb: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ width: "fit-content" }}
+              onClick={handleSubmit}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ width: "fit-content" }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </Box>
+              Submit
+            </Button>
           </Box>
         </Grid>
       </Grid>
