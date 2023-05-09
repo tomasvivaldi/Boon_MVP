@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   appBarStyles,
@@ -56,6 +56,15 @@ const mockData = [
 ];
 
 function ScanUpload() {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
   return (
     <div>
       <CssBaseline />
@@ -104,8 +113,20 @@ function ScanUpload() {
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
+                overflow: "hidden",
               }}
             >
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileUpload}
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                }}
+              />
               <Image
                 src="/upload-icon.svg"
                 alt="Upload Icon"
