@@ -27,20 +27,15 @@ const handleClose = () => {
   console.log("Close button clicked");
 };
 
-const handleSubmit = () => {
-  // Add your close functionality here
-  console.log("Submit button clicked");
-};
-
 const mockData = {
-  vendorName: "Name of Vendor",
-  vendorContact: "+11 222-333-4444",
-  vendorAddress: "3654 Mckee Road San Jose, CA 95127",
-  invoiceNumber: "123",
-  quickbooksLocation: "location1",
-  date: "2023-05-08",
-  category: "cat1",
-  vin: "1ABCDEFGH23456789",
+  vendorName: "",
+  vendorContact: "",
+  vendorAddress: "",
+  invoiceNumber: "",
+  quickbooksLocation: "",
+  date: "",
+  category: "",
+  vin: "",
 };
 
 export default function scan_upload() {
@@ -51,6 +46,25 @@ export default function scan_upload() {
     if (file) {
       setUploadedFile(file);
     }
+  };
+
+  const [data, setData] = useState(mockData);
+
+  const handleSubmit = () => {
+    // Add your close functionality here
+    console.log("Submit button clicked");
+
+    // Update the data when the submit button is clicked
+    setData({
+      vendorName: "Name of Vendor",
+      vendorContact: "+11 222-333-4444",
+      vendorAddress: "3654 Mckee Road San Jose, CA 95127",
+      invoiceNumber: "123",
+      quickbooksLocation: "location1",
+      date: "2023-05-08",
+      category: "cat1",
+      vin: "1ABCDEFGH23456789",
+    });
   };
 
   const theme = useTheme();
@@ -136,21 +150,17 @@ export default function scan_upload() {
                   <TableRow>
                     <TableCell>
                       <strong>Vendor Name: </strong>
-                      {mockData.vendorName ? mockData.vendorName : "\u00A0"}
+                      {data.vendorName ? data.vendorName : "\u00A0"}
                     </TableCell>
                     <TableCell>
                       <strong>Vendor Contact: </strong>
-                      {mockData.vendorContact
-                        ? mockData.vendorContact
-                        : "\u00A0"}
+                      {data.vendorContact ? data.vendorContact : "\u00A0"}
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={2}>
                       <strong>Vendor Address: </strong>
-                      {mockData.vendorAddress
-                        ? mockData.vendorAddress
-                        : "\u00A0"}
+                      {data.vendorAddress ? data.vendorAddress : "\u00A0"}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -167,35 +177,33 @@ export default function scan_upload() {
                       <TableRow>
                         <TableCell>
                           <strong>Invoice Number:</strong>{" "}
-                          {mockData.invoiceNumber
-                            ? mockData.invoiceNumber
-                            : "\u00A0"}
+                          {data.invoiceNumber ? data.invoiceNumber : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <strong>Quickbooks Location:</strong>{" "}
-                          {mockData.quickbooksLocation
-                            ? mockData.quickbooksLocation
+                          {data.quickbooksLocation
+                            ? data.quickbooksLocation
                             : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <strong>Date:</strong>{" "}
-                          {mockData.date ? mockData.date : "\u00A0"}
+                          {data.date ? data.date : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <strong>Category:</strong>{" "}
-                          {mockData.category ? mockData.category : "\u00A0"}
+                          {data.category ? data.category : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <strong>VINNNNNNNNN:</strong>{" "}
-                          {mockData.vin ? mockData.vin : "\u00A0"}
+                          {data.vin ? data.vin : "\u00A0"}
                         </TableCell>
                       </TableRow>
                     </>
@@ -204,31 +212,28 @@ export default function scan_upload() {
                       <TableRow>
                         <TableCell>
                           <strong>Invoice Number:</strong>{" "}
-                          {mockData.invoiceNumber
-                            ? mockData.invoiceNumber
-                            : "\u00A0"}
+                          {data.invoiceNumber ? data.invoiceNumber : "\u00A0"}
                         </TableCell>
                         <TableCell>
                           <strong>Quickbooks Location:</strong>{" "}
-                          {mockData.quickbooksLocation
-                            ? mockData.quickbooksLocation
+                          {data.quickbooksLocation
+                            ? data.quickbooksLocation
                             : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
                           <strong>Date:</strong>{" "}
-                          {mockData.date ? mockData.date : "\u00A0"}
+                          {data.date ? data.date : "\u00A0"}
                         </TableCell>
                         <TableCell>
                           <strong>Category:</strong>{" "}
-                          {mockData.category ? mockData.category : "\u00A0"}
+                          {data.category ? data.category : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>
-                          <strong>VIN:</strong>{" "}
-                          {mockData.vin ? mockData.vin : "\u00A0"}
+                          <strong>VIN:</strong> {data.vin ? data.vin : "\u00A0"}
                         </TableCell>
                       </TableRow>
                     </>
