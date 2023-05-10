@@ -1,3 +1,4 @@
+import OnBoarding from "@/components/OnBoarding";
 import "@/styles/globals.css";
 import { Roboto } from "next/font/google";
 
