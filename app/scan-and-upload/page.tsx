@@ -104,7 +104,7 @@ export default function scan_upload() {
         }}
       >
         <CssBaseline />
-        <Grid item xs={12} sm={6} md={6} padding={1.5} height={"100%"}>
+        <Grid item xs={12} md={6} padding={1.5} height={"100%"}>
           <Container className="container">
             <Box className="upload-box">
               <input
@@ -125,12 +125,12 @@ export default function scan_upload() {
                 height={25}
               />
               <Typography mt={2} textAlign={"center"} color={"#2A7CF8"}>
-                Drag or upload your invoice here
+                Click and upload your invoice here
               </Typography>
             </Box>
           </Container>
         </Grid>
-        <Grid item xs={12} sm={6} md={6} height={"100%"} border={0}>
+        <Grid item xs={12} md={6} height={"100%"} border={0}>
           <Box
             my={8}
             mx={4}
@@ -202,8 +202,7 @@ export default function scan_upload() {
                       </TableRow>
                       <TableRow>
                         <TableCell>
-                          <strong>VINNNNNNNNN:</strong>{" "}
-                          {data.vin ? data.vin : "\u00A0"}
+                          <strong>VIN:</strong> {data.vin ? data.vin : "\u00A0"}
                         </TableCell>
                       </TableRow>
                     </>
