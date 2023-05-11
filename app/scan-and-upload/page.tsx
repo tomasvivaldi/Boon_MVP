@@ -1,7 +1,8 @@
 "use client";
 import "@/styles/globals.css";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   AppBar,
   Box,
@@ -41,12 +42,12 @@ const mockData = {
 export default function scan_upload() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
-    if (file) {
-      setUploadedFile(file);
-    }
-  };
+  // const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files && event.target.files[0];
+  //   if (file) {
+  //     setUploadedFile(file);
+  //   }
+  // };
 
   const [data, setData] = useState(mockData);
 
@@ -69,6 +70,52 @@ export default function scan_upload() {
 
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+
+  const handleFileUpload = (file: File) => {
+    console.log("Uploaded file:", file);
+    setUploadedFile(file);
+
+    // Generate a preview URL for image and PDF files
+    if (file.type.startsWith("image/") || file.type === "application/pdf") {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPreviewUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const files = Array.from(event.dataTransfer.files);
+      console.log("All files:", files);
+      files.forEach((file) => {
+        console.log("File name:", file.name);
+        console.log("File type:", file.type);
+      });
+      const acceptedFiles = files.filter((file) =>
+        ["pdf", "doc", "docx", "png", "jpg", "jpeg"].includes(
+          (file.name.split(".").pop() || "").toLowerCase()
+        )
+      );
+      console.log("Accepted files:", acceptedFiles);
+      if (acceptedFiles.length > 0) {
+        handleFileUpload(acceptedFiles[0]);
+      }
+    },
+    [handleFileUpload]
+  );
+
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    // console.log("onDragOver event:", event);
+  };
 
   return (
     <div>
@@ -106,28 +153,62 @@ export default function scan_upload() {
         <CssBaseline />
         <Grid item xs={12} md={6} padding={1.5} height={"100%"}>
           <Container className="container">
-            <Box className="upload-box">
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileUpload}
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                }}
-              />
-              <Image
-                src="/upload-icon.svg"
-                alt="Upload Icon"
-                width={25}
-                height={25}
-              />
-              <Typography mt={2} textAlign={"center"} color={"#2A7CF8"}>
-                Click and upload your invoice here
-              </Typography>
-            </Box>
+            {!uploadedFile ? (
+              <Box
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                className="upload-box"
+              >
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  onChange={(event) => {
+                    const file = event.target.files && event.target.files[0];
+                    if (file) {
+                      handleFileUpload(file);
+                    }
+                  }}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                  }}
+                />
+
+                <Image
+                  src="/upload-icon.svg"
+                  alt="Upload Icon"
+                  width={25}
+                  height={25}
+                />
+                <Typography mt={2} textAlign={"center"} color={"#2A7CF8"}>
+                  Click and upload your invoice here
+                </Typography>
+              </Box>
+            ) : (
+              <>
+                {previewUrl &&
+                uploadedFile &&
+                uploadedFile.type.startsWith("image/") ? (
+                  <img
+                    src={previewUrl}
+                    alt="preview"
+                    style={{ maxWidth: "100%", maxHeight: "100%" }}
+                  />
+                ) : null}
+
+                {previewUrl &&
+                uploadedFile &&
+                uploadedFile.type === "application/pdf" ? (
+                  <iframe
+                    src={previewUrl}
+                    style={{ width: "100%", height: "100%" }}
+                    title="PDF Preview"
+                  ></iframe>
+                ) : null}
+              </>
+            )}
           </Container>
         </Grid>
         <Grid item xs={12} md={6} height={"100%"} border={0}>
