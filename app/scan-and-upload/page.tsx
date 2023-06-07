@@ -575,9 +575,7 @@ export default function ScanUpload() {
                           <strong>Order Reference:</strong>{" "}
                           {data.orderNumber ? data.orderNumber : "\u00A0"}
                         </TableCell>
-                      </TableRow>
 
-                      <TableRow>
                         <TableCell size="small">
                           <strong>Container Number:</strong>{" "}
                           {data.pickupDate ? data.pickupDate : "\u00A0"}
@@ -587,6 +585,10 @@ export default function ScanUpload() {
                         <TableCell size="small">
                           <strong>Seal Number:</strong>{" "}
                           {data.dropoffDate ? data.dropoffDate : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small" colSpan={2}>
+                          <strong>Order Number:</strong>{" "}
+                          {data.orderNumber ? data.orderNumber : "\u00A0"}
                         </TableCell>
                       </TableRow>
 
@@ -603,8 +605,6 @@ export default function ScanUpload() {
                           <strong>Pickup Date:</strong>{" "}
                           {data.pickupDate ? data.pickupDate : "\u00A0"}
                         </TableCell>
-                      </TableRow>
-                      <TableRow>
                         <TableCell size="small">
                           <strong>Dropoff Date:</strong>{" "}
                           {data.dropoffDate ? data.dropoffDate : "\u00A0"}
