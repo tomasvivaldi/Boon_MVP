@@ -52,6 +52,8 @@ const mockData = {
   loadDescription: "",
   shippingUnits: "",
   totalWeight: "",
+  sealNumber: "",
+  container: "",
   vin: "",
   table1: [],
 };
@@ -137,6 +139,8 @@ export default function ScanUpload() {
                       loadDescription: "Missing",
                       shippingUnits: "Missing",
                       totalWeight: "Missing",
+                      sealNumber: "Missing",
+                      container: "Missing",
                       vin: "Missing",
                       table1: [
                         ["Missing", "Missing", "Missing"],
@@ -167,6 +171,10 @@ export default function ScanUpload() {
                       (field: { name: string }) =>
                         field.name === "Order Numbers"
                     );
+                    const orderNumberField2 = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "Shipment Ref#"
+                    );
                     // const quickbooksLocationField = parsedData.parsed.find(
                     //   (field: { name: string }) =>
                     //     field.name === "QuickBooks Location"
@@ -194,6 +202,13 @@ export default function ScanUpload() {
                     const totalWeightField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "totalWeight"
                     );
+                    const sealNumberField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "Container - Seal Marks and Numbers"
+                    );
+                    const containerField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "CONTAINER"
+                    );
                     const vinField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "VIN"
                     );
@@ -219,6 +234,7 @@ export default function ScanUpload() {
                         defaultData.vendorName,
                       orderNumber:
                         orderNumberField?.value?.value ||
+                        orderNumberField2?.value?.value ||
                         defaultData.orderNumber,
                       // quickbooksLocation:
                       //   quickbooksLocationField?.value?.value ||
@@ -242,6 +258,10 @@ export default function ScanUpload() {
                       totalWeight:
                         totalWeightField?.value?.value ||
                         defaultData.totalWeight,
+                      sealNumber:
+                        sealNumberField?.value?.value || defaultData.sealNumber,
+                      container:
+                        containerField?.value?.value || defaultData.container,
                       vin: vinField?.value?.value || defaultData.vin,
                       table1: table1Field?.value || defaultData.table1,
                     };
@@ -578,13 +598,13 @@ export default function ScanUpload() {
 
                         <TableCell size="small">
                           <strong>Container Number:</strong>{" "}
-                          {data.pickupDate ? data.pickupDate : "\u00A0"}
+                          {data.container ? data.container : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell size="small">
                           <strong>Seal Number:</strong>{" "}
-                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
+                          {data.sealNumber ? data.sealNumber : "\u00A0"}
                         </TableCell>
                         <TableCell size="small" colSpan={2}>
                           <strong>Order Number:</strong>{" "}
@@ -659,7 +679,7 @@ export default function ScanUpload() {
                       <TableRow>
                         <TableCell size="small">
                           <strong>Seal Number:</strong>{" "}
-                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
+                          {data.sealNumber ? data.sealNumber : "\u00A0"}
                         </TableCell>
                         <TableCell size="small" colSpan={2}>
                           <strong>Order Number:</strong>{" "}
