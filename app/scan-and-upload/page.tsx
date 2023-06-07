@@ -2,6 +2,7 @@
 import "@/styles/globals.css";
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
+import * as UTIF from "utif";
 import dynamic from "next/dynamic";
 import {
   AppBar,
@@ -15,6 +16,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
   Toolbar,
   Typography,
@@ -22,6 +24,13 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import useMediaQuery from "@mui/material/useMediaQuery";
+
+interface ProductField {
+  id: string;
+  name: string;
+  value: string;
+  format_out: string;
+}
 
 const handleClose = () => {
   // Add your close functionality here
@@ -32,40 +41,210 @@ const mockData = {
   vendorName: "",
   vendorContact: "",
   vendorAddress: "",
-  invoiceNumber: "",
-  quickbooksLocation: "",
-  date: "",
-  category: "",
+  customerAddress: "",
+  orderNumber: "",
+  // quickbooksLocation: "",
+  pickupDate: "",
+  pickupTime: "",
+  dropoffDate: "",
+  dropoffTime: "",
+  loadDescription: "",
+  shippingUnits: "",
+  totalWeight: "",
   vin: "",
+  table1: [],
 };
 
-export default function scan_upload() {
+export default function scanUpload() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-
-  // const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files && event.target.files[0];
-  //   if (file) {
-  //     setUploadedFile(file);
-  //   }
-  // };
 
   const [data, setData] = useState(mockData);
 
   const handleSubmit = () => {
-    // Add your close functionality here
     console.log("Submit button clicked");
 
-    // Update the data when the submit button is clicked
-    setData({
-      vendorName: "Name of Vendor",
-      vendorContact: "+11 222-333-4444",
-      vendorAddress: "3654 Mckee Road San Jose, CA 95127",
-      invoiceNumber: "123",
-      quickbooksLocation: "location1",
-      date: "2023-05-08",
-      category: "cat1",
-      vin: "1ABCDEFGH23456789",
-    });
+    // Add your code to upload the file here
+    if (uploadedFile) {
+      const uploadUrl =
+        "https://api.parsio.io/mailboxes/647a775cf88828000e2aada5/upload";
+      const parseUrl = "https://api.parsio.io/docs"; // Parse document endpoint
+      const apiKey = "yuaoixwbfo3farsbnvq21u3zulgi4p2t9t2bl594hgexdnd0";
+
+      let formData = new FormData();
+      formData.append("file", uploadedFile);
+
+      let requestOptions = {
+        method: "POST",
+        headers: {
+          "X-API-Key": apiKey,
+        },
+        body: formData,
+      };
+
+      fetch(uploadUrl, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("data from Parsio", data);
+          const documentId = data;
+
+          // Now fetch the document data using the documentId
+          const docUrl = `https://api.parsio.io/docs/${documentId}`;
+          let docOptions = {
+            method: "GET",
+            headers: {
+              "X-API-Key": apiKey,
+            },
+          };
+
+          fetch(docUrl, docOptions)
+            .then((response) => response.json())
+            .then((documentData) => {
+              console.log("Document data", documentData);
+
+              // Parse the document using the documentId
+              const parseDocUrl = `${parseUrl}/${documentId}/parse`;
+              let parseDocOptions = {
+                method: "POST",
+                headers: {
+                  "X-API-Key": apiKey,
+                },
+              };
+
+              fetch(parseDocUrl, parseDocOptions)
+                .then((response) => response.json())
+                .then((parsedData) => {
+                  console.log("Parsed document data", parsedData);
+                  // Assuming the parsedData has fields like vendorName, orderNumber, etc.
+                  setData(() => {
+                    // Initialize default values
+                    const defaultData = {
+                      vendorName: "Missing",
+                      vendorContact: "Missing",
+                      vendorAddress: "Missing",
+                      customerAddress: "Missing",
+                      orderNumber: "Missing",
+                      // quickbooksLocation: "Missing",
+                      pickupDate: "Missing",
+                      pickupTime: "Missing",
+                      dropoffDate: "Missing",
+                      dropoffTime: "Missing",
+                      loadDescription: "Missing",
+                      shippingUnits: "Missing",
+                      totalWeight: "Missing",
+                      vin: "Missing",
+                      table1: [
+                        ["Missing", "Missing", "Missing"],
+                        ["Missing", "Missing", "Missing"],
+                        ["Missing", "Missing", "Missing"],
+                      ],
+                    };
+
+                    // Find the respective fields in parsedData
+                    const vendorNameField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "VendorName"
+                    );
+                    const vendorContactField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "Contact"
+                    );
+                    const vendorAddressField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "VendorAddress"
+                    );
+                    const customerAddressField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "CustomerAddress"
+                    );
+                    const orderNumberField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "Order Numbers"
+                    );
+                    // const quickbooksLocationField = parsedData.parsed.find(
+                    //   (field: { name: string }) =>
+                    //     field.name === "QuickBooks Location"
+                    // );
+                    const pickupDateField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "DATE"
+                    );
+                    const pickupTimeField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "pickupTime"
+                    );
+                    const dropoffDateField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "DATE2"
+                    );
+                    const dropoffTimeField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "dropoffTime"
+                    );
+                    const loadDescriptionField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "loadDescription"
+                    );
+                    const shippingUnitsField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "shippingUnits"
+                    );
+                    const totalWeightField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "totalWeight"
+                    );
+                    const vinField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "VIN"
+                    );
+                    const table1Field = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "Table 1"
+                    );
+
+                    // Extract values from the found fields or use default values
+                    return {
+                      vendorName:
+                        vendorNameField?.value?.value || defaultData.vendorName,
+                      vendorContact:
+                        vendorContactField?.value?.value ||
+                        defaultData.vendorContact,
+                      vendorAddress:
+                        vendorAddressField?.value?.content ||
+                        defaultData.vendorAddress,
+                      customerAddress:
+                        customerAddressField?.value?.content ||
+                        defaultData.customerAddress,
+                      orderNumber:
+                        orderNumberField?.value?.value ||
+                        defaultData.orderNumber,
+                      // quickbooksLocation:
+                      //   quickbooksLocationField?.value?.value ||
+                      //   defaultData.quickbooksLocation,
+                      pickupDate:
+                        pickupDateField?.value?.value || defaultData.pickupDate,
+                      pickupTime:
+                        pickupTimeField?.value?.value || defaultData.pickupTime,
+                      dropoffDate:
+                        dropoffDateField?.value?.value ||
+                        defaultData.dropoffDate,
+                      dropoffTime:
+                        dropoffTimeField?.value?.value ||
+                        defaultData.dropoffTime,
+                      loadDescription:
+                        loadDescriptionField?.value?.value ||
+                        defaultData.loadDescription,
+                      shippingUnits:
+                        shippingUnitsField?.value?.value ||
+                        defaultData.shippingUnits,
+                      totalWeight:
+                        totalWeightField?.value?.value ||
+                        defaultData.totalWeight,
+                      vin: vinField?.value?.value || defaultData.vin,
+                      table1: table1Field?.value || defaultData.table1,
+                    };
+                  });
+                })
+                .catch((error) => console.log("Error parsing document", error));
+            })
+            .catch((error) =>
+              console.log("Error fetching document data", error)
+            );
+        })
+        .catch((error) => console.log("Error uploading file", error));
+    } else {
+      console.log("No file uploaded");
+    }
   };
 
   const theme = useTheme();
@@ -79,10 +258,58 @@ export default function scan_upload() {
     setUploadedFile(file);
 
     // Generate a preview URL for image and PDF files
-    if (file.type.startsWith("image/") || file.type === "application/pdf") {
+    if (
+      file.type.startsWith("image/") ||
+      file.type === "application/pdf" ||
+      file.type === "image/tiff"
+    ) {
       const reader = new FileReader();
       reader.onload = (event) => {
         setPreviewUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+
+    // If it's a TIFF image, convert it to a canvas and then to a data URL
+    if (file.type === "image/tiff") {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result instanceof ArrayBuffer) {
+          const buffer = event.target.result;
+          const ifds = UTIF.decode(buffer);
+          UTIF.decodeImage(buffer, ifds[0]); // We use decodeImage instead of decodeImages
+          const rgba = UTIF.toRGBA8(ifds[0]);
+
+          const width = ifds[0].width;
+          const height = ifds[0].height;
+
+          // Create a canvas and render the tiff image on it
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            const imgData = ctx.createImageData(width, height);
+            imgData.data.set(new Uint8ClampedArray(rgba));
+            ctx.putImageData(imgData, 0, 0);
+
+            setPreviewUrl(canvas.toDataURL());
+          }
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else if (
+      file.type.startsWith("image/") ||
+      file.type === "application/pdf"
+    ) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (typeof event.target?.result === "string") {
+          setPreviewUrl(event.target.result);
+        }
       };
       reader.readAsDataURL(file);
     } else {
@@ -100,7 +327,7 @@ export default function scan_upload() {
         console.log("File type:", file.type);
       });
       const acceptedFiles = files.filter((file) =>
-        ["pdf", "doc", "docx", "png", "jpg", "jpeg"].includes(
+        ["pdf", "doc", "docx", "png", "jpg", "jpeg", "tiff"].includes(
           (file.name.split(".").pop() || "").toLowerCase()
         )
       );
@@ -161,7 +388,7 @@ export default function scan_upload() {
               >
                 <input
                   type="file"
-                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.tiff"
                   onChange={(event) => {
                     const file = event.target.files && event.target.files[0];
                     if (file) {
@@ -213,7 +440,7 @@ export default function scan_upload() {
         </Grid>
         <Grid item xs={12} md={6} height={"100%"} border={0}>
           <Box
-            my={8}
+            my={4}
             mx={4}
             display={"flex"}
             flexDirection={"column"}
@@ -222,24 +449,24 @@ export default function scan_upload() {
             <Typography component="h2" variant="h5">
               New Bill
             </Typography>
-            <Typography component="h3" variant="body1" my={2}>
+            <Typography component="h3" variant="body1" my={1}>
               Vendor
             </Typography>
             <TableContainer className="table-container">
               <Table aria-label="simple table">
                 <TableBody>
                   <TableRow>
-                    <TableCell>
+                    <TableCell size="small">
                       <strong>Vendor Name: </strong>
                       {data.vendorName ? data.vendorName : "\u00A0"}
                     </TableCell>
-                    <TableCell>
+                    <TableCell size="small">
                       <strong>Vendor Contact: </strong>
                       {data.vendorContact ? data.vendorContact : "\u00A0"}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell colSpan={2}>
+                    <TableCell colSpan={2} size="small">
                       <strong>Vendor Address: </strong>
                       {data.vendorAddress ? data.vendorAddress : "\u00A0"}
                     </TableCell>
@@ -247,8 +474,82 @@ export default function scan_upload() {
                 </TableBody>
               </Table>
             </TableContainer>
-            <Typography component="h3" variant="body1" mt={2} my={2}>
-              Purpose
+
+            <Typography component="h3" variant="body1" my={1}>
+              Customer
+            </Typography>
+            <TableContainer className="table-container">
+              <Table aria-label="simple table">
+                <TableBody>
+                  <TableRow>
+                    <TableCell size="small">
+                      <strong>Customer Name: </strong>
+                      {data.vendorName ? data.vendorName : "\u00A0"}
+                    </TableCell>
+                    <TableCell size="small">
+                      <strong>Customer Contact: </strong>
+                      {data.vendorContact ? data.vendorContact : "\u00A0"}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={2} size="small">
+                      <strong>Customer Address: </strong>
+                      {data.customerAddress ? data.customerAddress : "\u00A0"}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            <Typography component="h3" variant="body1" my={1}>
+              Load Description
+            </Typography>
+            <TableContainer className="table-container">
+              <Table aria-label="products table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell size="small">
+                      <strong>Shipping Units</strong>
+                    </TableCell>
+                    <TableCell size="small">
+                      <strong>Description</strong>
+                    </TableCell>
+                    <TableCell size="small">
+                      <strong>Weight</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.table1 &&
+                    data.table1.map(
+                      (product: ProductField[], index: number) => {
+                        return (
+                          <TableRow key={index}>
+                            <TableCell size="small">
+                              {product[0] && product[0].value
+                                ? product[0].value
+                                : "\u00A0"}
+                            </TableCell>
+                            <TableCell size="small">
+                              {product[1] && product[1].value
+                                ? product[1].value
+                                : "\u00A0"}
+                            </TableCell>
+                            <TableCell size="small">
+                              {product[2] && product[2].value
+                                ? product[2].value
+                                : "\u00A0"}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            <Typography component="h3" variant="body1" mt={2} my={1}>
+              Additional Information
             </Typography>
             <TableContainer className="table-container">
               <Table aria-label="simple table">
@@ -256,33 +557,75 @@ export default function scan_upload() {
                   {isMediumScreen ? (
                     <>
                       <TableRow>
-                        <TableCell>
-                          <strong>Invoice Number:</strong>{" "}
-                          {data.invoiceNumber ? data.invoiceNumber : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Order Reference:</strong>{" "}
+                          {data.orderNumber ? data.orderNumber : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell size="small">
+                          <strong>Container Number:</strong>{" "}
+                          {data.pickupDate ? data.pickupDate : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>
+                        <TableCell size="small">
+                          <strong>Seal Number:</strong>{" "}
+                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+
+                      {/* <TableRow>
+                        <TableCell size="small">
                           <strong>Quickbooks Location:</strong>{" "}
                           {data.quickbooksLocation
                             ? data.quickbooksLocation
                             : "\u00A0"}
                         </TableCell>
-                      </TableRow>
+                      </TableRow> */}
                       <TableRow>
-                        <TableCell>
-                          <strong>Date:</strong>{" "}
-                          {data.date ? data.date : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Pickup Date:</strong>{" "}
+                          {data.pickupDate ? data.pickupDate : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>
-                          <strong>Category:</strong>{" "}
-                          {data.category ? data.category : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Dropoff Date:</strong>{" "}
+                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>
+                        <TableCell size="small">
+                          <strong>Pickup Time:</strong>{" "}
+                          {data.pickupTime ? data.pickupTime : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small">
+                          <strong>Dropoff Time:</strong>{" "}
+                          {data.dropoffTime ? data.dropoffTime : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+                      {/* <TableRow>
+                        <TableCell colSpan={2} size="small">
+                          <strong>Load Description:</strong>{" "}
+                          {data.loadDescription
+                            ? data.loadDescription
+                            : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell size="small">
+                          <strong>Shipping units:</strong>{" "}
+                          {data.shippingUnits ? data.shippingUnits : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small">
+                          <strong>Total Weight:</strong>{" "}
+                          {data.totalWeight ? data.totalWeight : "\u00A0"}
+                        </TableCell>
+                      </TableRow> */}
+                      <TableRow>
+                        <TableCell size="small">
                           <strong>VIN:</strong> {data.vin ? data.vin : "\u00A0"}
                         </TableCell>
                       </TableRow>
@@ -290,29 +633,71 @@ export default function scan_upload() {
                   ) : (
                     <>
                       <TableRow>
-                        <TableCell>
-                          <strong>Invoice Number:</strong>{" "}
-                          {data.invoiceNumber ? data.invoiceNumber : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Order Reference:</strong>{" "}
+                          {data.orderNumber ? data.orderNumber : "\u00A0"}
                         </TableCell>
-                        <TableCell>
+                        <TableCell size="small">
+                          <strong>Container Number:</strong>{" "}
+                          {data.pickupDate ? data.pickupDate : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell size="small">
+                          <strong>Seal Number:</strong>{" "}
+                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small" colSpan={2}>
+                          <strong>Order Number:</strong>{" "}
+                          {data.orderNumber ? data.orderNumber : "\u00A0"}
+                        </TableCell>
+                        {/* <TableCell size="small">
                           <strong>Quickbooks Location:</strong>{" "}
                           {data.quickbooksLocation
                             ? data.quickbooksLocation
                             : "\u00A0"}
+                        </TableCell> */}
+                      </TableRow>
+                      <TableRow>
+                        <TableCell size="small">
+                          <strong>Pickup Date:</strong>{" "}
+                          {data.pickupDate ? data.pickupDate : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small">
+                          <strong>Dropoff Date:</strong>{" "}
+                          {data.dropoffDate ? data.dropoffDate : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>
-                          <strong>Date:</strong>{" "}
-                          {data.date ? data.date : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Pickup Time:</strong>{" "}
+                          {data.pickupTime ? data.pickupTime : "\u00A0"}
                         </TableCell>
-                        <TableCell>
-                          <strong>Category:</strong>{" "}
-                          {data.category ? data.category : "\u00A0"}
+                        <TableCell size="small">
+                          <strong>Dropoff Time:</strong>{" "}
+                          {data.dropoffTime ? data.dropoffTime : "\u00A0"}
+                        </TableCell>
+                      </TableRow>
+                      {/* <TableRow>
+                        <TableCell colSpan={2} size="small">
+                          <strong>Load Description:</strong>{" "}
+                          {data.loadDescription
+                            ? data.loadDescription
+                            : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>
+                        <TableCell size="small">
+                          <strong>Shipping units:</strong>{" "}
+                          {data.shippingUnits ? data.shippingUnits : "\u00A0"}
+                        </TableCell>
+                        <TableCell size="small">
+                          <strong>Total Weight:</strong>{" "}
+                          {data.totalWeight ? data.totalWeight : "\u00A0"}
+                        </TableCell>
+                      </TableRow> */}
+                      <TableRow>
+                        <TableCell size="small">
                           <strong>VIN:</strong> {data.vin ? data.vin : "\u00A0"}
                         </TableCell>
                       </TableRow>
