@@ -55,7 +55,7 @@ const mockData = {
   table1: [],
 };
 
-export default function scanUpload() {
+export default function ScanUpload() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const [data, setData] = useState(mockData);
@@ -253,7 +253,7 @@ export default function scanUpload() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = useCallback((file: File) => {
     console.log("Uploaded file:", file);
     setUploadedFile(file);
 
@@ -315,7 +315,7 @@ export default function scanUpload() {
     } else {
       setPreviewUrl(null);
     }
-  };
+  }, []); // no external dependencies
 
   const onDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -418,7 +418,7 @@ export default function scanUpload() {
                 {previewUrl &&
                 uploadedFile &&
                 uploadedFile.type.startsWith("image/") ? (
-                  <img
+                  <Image
                     src={previewUrl}
                     alt="preview"
                     style={{ maxWidth: "100%", maxHeight: "100%" }}

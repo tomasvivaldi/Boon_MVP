@@ -105,7 +105,7 @@ const OTPDialog: React.FC<OTPDialogProps> = ({ open, handleClose }) => {
             <Grid container item justifyContent="space-between">
               <Grid item>
                 <Typography variant="body2">
-                  Didn't receive the code?
+                  Didn&apos;t receive the code?
                 </Typography>
                 <Typography variant="body2">
                   Resend in 00:{countdown < 10 ? `0${countdown}` : countdown}
