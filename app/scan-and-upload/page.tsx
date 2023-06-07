@@ -162,7 +162,7 @@ export default function ScanUpload() {
                     );
                     const customerAddressField = parsedData.parsed.find(
                       (field: { name: string }) =>
-                        field.name === "CustomerAddress"
+                        field.name === "ShippingAddress"
                     );
                     const customerNameField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "CustomerName"
