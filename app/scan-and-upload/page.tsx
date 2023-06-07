@@ -65,10 +65,14 @@ export default function ScanUpload() {
 
     // Add your code to upload the file here
     if (uploadedFile) {
-      const uploadUrl =
-        "https://api.parsio.io/mailboxes/647a775cf88828000e2aada5/upload";
+      const uploadUrl = `https://api.parsio.io/mailboxes/${process.env.NEXT_PUBLIC_PARSIO_MAILBOX_ID}/upload`;
       const parseUrl = "https://api.parsio.io/docs"; // Parse document endpoint
-      const apiKey = "yuaoixwbfo3farsbnvq21u3zulgi4p2t9t2bl594hgexdnd0";
+      const apiKey = process.env.NEXT_PUBLIC_PARSIO_API;
+
+      // Check if apiKey is defined, throw an error if it's not
+      if (!apiKey) {
+        throw new Error("API key is not set");
+      }
 
       let formData = new FormData();
       formData.append("file", uploadedFile);
@@ -351,7 +355,7 @@ export default function ScanUpload() {
         <Toolbar>
           <Box display={"flex"} justifyContent={"space-between"} width={"100%"}>
             <Typography variant="h6" color="inherit" noWrap>
-              Scan and Upload Invoices
+              Scan and Upload Work Orders
             </Typography>
             <Box display={"flex"} alignItems={"center"}>
               <Box
@@ -419,6 +423,8 @@ export default function ScanUpload() {
                 uploadedFile &&
                 uploadedFile.type.startsWith("image/") ? (
                   <Image
+                    width={900}
+                    height={1600}
                     src={previewUrl}
                     alt="preview"
                     style={{ maxWidth: "100%", maxHeight: "100%" }}
