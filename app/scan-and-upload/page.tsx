@@ -42,6 +42,7 @@ const mockData = {
   vendorContact: "",
   vendorAddress: "",
   customerAddress: "",
+  customerName: "",
   orderNumber: "",
   // quickbooksLocation: "",
   pickupDate: "",
@@ -126,6 +127,7 @@ export default function ScanUpload() {
                       vendorContact: "Missing",
                       vendorAddress: "Missing",
                       customerAddress: "Missing",
+                      customerName: "Missing",
                       orderNumber: "Missing",
                       // quickbooksLocation: "Missing",
                       pickupDate: "Missing",
@@ -157,6 +159,9 @@ export default function ScanUpload() {
                     const customerAddressField = parsedData.parsed.find(
                       (field: { name: string }) =>
                         field.name === "CustomerAddress"
+                    );
+                    const customerNameField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "customerName"
                     );
                     const orderNumberField = parsedData.parsed.find(
                       (field: { name: string }) =>
@@ -209,6 +214,9 @@ export default function ScanUpload() {
                       customerAddress:
                         customerAddressField?.value?.content ||
                         defaultData.customerAddress,
+                      customerName:
+                        customerNameField?.value?.value ||
+                        defaultData.vendorName,
                       orderNumber:
                         orderNumberField?.value?.value ||
                         defaultData.orderNumber,
@@ -490,7 +498,7 @@ export default function ScanUpload() {
                   <TableRow>
                     <TableCell size="small">
                       <strong>Customer Name: </strong>
-                      {data.vendorName ? data.vendorName : "\u00A0"}
+                      {data.customerName ? data.customerName : "\u00A0"}
                     </TableCell>
                     <TableCell size="small">
                       <strong>Customer Contact: </strong>
