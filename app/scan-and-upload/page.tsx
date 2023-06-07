@@ -165,7 +165,7 @@ export default function ScanUpload() {
                         field.name === "CustomerAddress"
                     );
                     const customerNameField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "customerName"
+                      (field: { name: string }) => field.name === "CustomerName"
                     );
                     const orderNumberField = parsedData.parsed.find(
                       (field: { name: string }) =>
