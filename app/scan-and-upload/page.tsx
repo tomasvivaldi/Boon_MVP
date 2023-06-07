@@ -203,11 +203,14 @@ export default function ScanUpload() {
                       (field: { name: string }) => field.name === "totalWeight"
                     );
                     const sealNumberField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "Container - Seal Marks and Numbers"
+                      (field: { name: string }) => field.name === "SEAL"
                     );
                     const containerField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "CONTAINER"
+                    );
+                    console.log(
+                      "containerField?.value?.value",
+                      containerField?.value?.value
                     );
                     const vinField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "VIN"
@@ -602,13 +605,9 @@ export default function ScanUpload() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell size="small">
+                        <TableCell size="small" colSpan={2}>
                           <strong>Seal Number:</strong>{" "}
                           {data.sealNumber ? data.sealNumber : "\u00A0"}
-                        </TableCell>
-                        <TableCell size="small" colSpan={2}>
-                          <strong>Order Number:</strong>{" "}
-                          {data.orderNumber ? data.orderNumber : "\u00A0"}
                         </TableCell>
                       </TableRow>
 
@@ -677,13 +676,9 @@ export default function ScanUpload() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell size="small">
+                        <TableCell size="small" colSpan={2}>
                           <strong>Seal Number:</strong>{" "}
                           {data.sealNumber ? data.sealNumber : "\u00A0"}
-                        </TableCell>
-                        <TableCell size="small" colSpan={2}>
-                          <strong>Order Number:</strong>{" "}
-                          {data.orderNumber ? data.orderNumber : "\u00A0"}
                         </TableCell>
                         {/* <TableCell size="small">
                           <strong>Quickbooks Location:</strong>{" "}
