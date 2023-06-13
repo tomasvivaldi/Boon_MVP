@@ -233,10 +233,6 @@ export default function ScanUpload() {
                     const containerField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "CONTAINER"
                     );
-                    console.log(
-                      "containerField?.value?.value",
-                      containerField?.value?.value
-                    );
                     const vinField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "VIN"
                     );
