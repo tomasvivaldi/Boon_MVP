@@ -30,6 +30,10 @@ interface ProductField {
   name: string;
   value: string;
   format_out: string;
+
+  shippingUnits: string;
+  weight: string;
+  goodsDescription: string;
 }
 
 const handleClose = () => {
@@ -43,6 +47,7 @@ const mockData = {
   vendorAddress: "",
   customerAddress: "",
   customerName: "",
+  customerContact: "",
   orderNumber: "",
   // quickbooksLocation: "",
   pickupDate: "",
@@ -56,6 +61,7 @@ const mockData = {
   container: "",
   vin: "",
   table1: [],
+  table: [],
 };
 
 export default function ScanUpload() {
@@ -130,6 +136,7 @@ export default function ScanUpload() {
                       vendorAddress: "Missing",
                       customerAddress: "Missing",
                       customerName: "Missing",
+                      customerContact: "Missing",
                       orderNumber: "Missing",
                       // quickbooksLocation: "Missing",
                       pickupDate: "Missing",
@@ -147,6 +154,11 @@ export default function ScanUpload() {
                         ["Missing", "Missing", "Missing"],
                         ["Missing", "Missing", "Missing"],
                       ],
+                      table: [
+                        ["Missing", "Missing", "Missing"],
+                        ["Missing", "Missing", "Missing"],
+                        ["Missing", "Missing", "Missing"],
+                      ],
                     };
 
                     // Find the respective fields in parsedData
@@ -155,6 +167,9 @@ export default function ScanUpload() {
                     );
                     const vendorContactField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "Contact"
+                    );
+                    const vendorContactField2 = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "PHONE#"
                     );
                     const vendorAddressField = parsedData.parsed.find(
                       (field: { name: string }) =>
@@ -166,6 +181,9 @@ export default function ScanUpload() {
                     );
                     const customerNameField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "CustomerName"
+                    );
+                    const customerContactField = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "PHONE#2"
                     );
                     const orderNumberField = parsedData.parsed.find(
                       (field: { name: string }) =>
@@ -195,9 +213,16 @@ export default function ScanUpload() {
                       (field: { name: string }) =>
                         field.name === "loadDescription"
                     );
+                    const goodsDescriptionField = parsedData.parsed.find(
+                      (field: { name: string }) =>
+                        field.name === "GOODS DESCRIPTION"
+                    );
                     const shippingUnitsField = parsedData.parsed.find(
                       (field: { name: string }) =>
                         field.name === "shippingUnits"
+                    );
+                    const shippingUnitsField2 = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "PIECES"
                     );
                     const totalWeightField = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "totalWeight"
@@ -218,12 +243,16 @@ export default function ScanUpload() {
                     const table1Field = parsedData.parsed.find(
                       (field: { name: string }) => field.name === "Table 1"
                     );
+                    const table4Field = parsedData.parsed.find(
+                      (field: { name: string }) => field.name === "Table 4"
+                    );
 
                     // Extract values from the found fields or use default values
                     return {
                       vendorName:
                         vendorNameField?.value?.value || defaultData.vendorName,
                       vendorContact:
+                        vendorContactField2?.value?.value ||
                         vendorContactField?.value?.value ||
                         defaultData.vendorContact,
                       vendorAddress:
@@ -235,6 +264,10 @@ export default function ScanUpload() {
                       customerName:
                         customerNameField?.value?.value ||
                         defaultData.vendorName,
+                      customerContact:
+                        // customerContactField2?.value?.value ||
+                        customerContactField?.value?.value ||
+                        defaultData.customerContact,
                       orderNumber:
                         orderNumberField?.value?.value ||
                         orderNumberField2?.value?.value ||
@@ -253,9 +286,11 @@ export default function ScanUpload() {
                         dropoffTimeField?.value?.value ||
                         defaultData.dropoffTime,
                       loadDescription:
+                        goodsDescriptionField?.value?.value ||
                         loadDescriptionField?.value?.value ||
                         defaultData.loadDescription,
                       shippingUnits:
+                        shippingUnitsField2?.value?.value ||
                         shippingUnitsField?.value?.value ||
                         defaultData.shippingUnits,
                       totalWeight:
@@ -266,7 +301,33 @@ export default function ScanUpload() {
                       container:
                         containerField?.value?.value || defaultData.container,
                       vin: vinField?.value?.value || defaultData.vin,
-                      table1: table1Field?.value || defaultData.table1,
+                      table1:
+                        table4Field?.value ||
+                        table1Field?.value ||
+                        defaultData.table1,
+                      table: (() => {
+                        const tableDataArray =
+                          table4Field?.value ||
+                          table1Field?.value ||
+                          defaultData.table1;
+
+                        // If tableDataArray is not an array, return it as is
+                        if (!Array.isArray(tableDataArray)) {
+                          return tableDataArray;
+                        }
+
+                        // Convert the array to a map
+                        const tableDataMap: { [key: string]: any } = {};
+                        for (const row of tableDataArray) {
+                          for (const cell of row) {
+                            if (cell && cell.name && cell.value) {
+                              tableDataMap[cell.name] = cell.value;
+                            }
+                          }
+                        }
+
+                        return tableDataMap;
+                      })(),
                     };
                   });
                 })
@@ -487,7 +548,7 @@ export default function ScanUpload() {
               New Bill
             </Typography>
             <Typography component="h3" variant="body1" my={1}>
-              Vendor
+              Source
             </Typography>
             <TableContainer className="table-container">
               <Table aria-label="simple table">
@@ -498,7 +559,7 @@ export default function ScanUpload() {
                       {data.vendorName ? data.vendorName : "\u00A0"}
                     </TableCell>
                     <TableCell size="small">
-                      <strong>Vendor Contact: </strong>
+                      <strong>Source Transportation Contact: </strong>
                       {data.vendorContact ? data.vendorContact : "\u00A0"}
                     </TableCell>
                   </TableRow>
@@ -513,7 +574,7 @@ export default function ScanUpload() {
             </TableContainer>
 
             <Typography component="h3" variant="body1" my={1}>
-              Customer
+              Destination
             </Typography>
             <TableContainer className="table-container">
               <Table aria-label="simple table">
@@ -524,8 +585,8 @@ export default function ScanUpload() {
                       {data.customerName ? data.customerName : "\u00A0"}
                     </TableCell>
                     <TableCell size="small">
-                      <strong>Customer Contact: </strong>
-                      {data.vendorContact ? data.vendorContact : "\u00A0"}
+                      <strong>Destination Transportation Contact: </strong>
+                      {data.customerContact ? data.customerContact : "\u00A0"}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -556,7 +617,7 @@ export default function ScanUpload() {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                {/* <TableBody>
                   {data.table1 &&
                     data.table1.map(
                       (product: ProductField[], index: number) => {
@@ -581,6 +642,33 @@ export default function ScanUpload() {
                         );
                       }
                     )}
+                </TableBody> */}
+
+                <TableBody>
+                  <TableRow>
+                    <TableCell size="small">
+                      {data.table &&
+                      (data.table as { [key: string]: any })["PIECES"]
+                        ? (data.table as { [key: string]: any })["PIECES"]
+                        : "\u00A0"}
+                    </TableCell>
+                    <TableCell size="small">
+                      {data.table &&
+                      (data.table as { [key: string]: any })[
+                        "GOODS DESCRIPTION"
+                      ]
+                        ? (data.table as { [key: string]: any })[
+                            "GOODS DESCRIPTION"
+                          ]
+                        : "\u00A0"}
+                    </TableCell>
+                    <TableCell size="small">
+                      {data.table &&
+                      (data.table as { [key: string]: any })["WEIGHT"]
+                        ? (data.table as { [key: string]: any })["WEIGHT"]
+                        : "\u00A0"}
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
@@ -639,7 +727,7 @@ export default function ScanUpload() {
                           {data.dropoffTime ? data.dropoffTime : "\u00A0"}
                         </TableCell>
                       </TableRow>
-                      {/* <TableRow>
+                      <TableRow>
                         <TableCell colSpan={2} size="small">
                           <strong>Load Description:</strong>{" "}
                           {data.loadDescription
@@ -656,7 +744,7 @@ export default function ScanUpload() {
                           <strong>Total Weight:</strong>{" "}
                           {data.totalWeight ? data.totalWeight : "\u00A0"}
                         </TableCell>
-                      </TableRow> */}
+                      </TableRow>
                       <TableRow>
                         <TableCell size="small">
                           <strong>VIN:</strong> {data.vin ? data.vin : "\u00A0"}
@@ -672,7 +760,7 @@ export default function ScanUpload() {
                         </TableCell>
                         <TableCell size="small">
                           <strong>Container Number:</strong>{" "}
-                          {data.pickupDate ? data.pickupDate : "\u00A0"}
+                          {data.container ? data.container : "\u00A0"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
