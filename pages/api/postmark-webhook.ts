@@ -60,7 +60,7 @@ export default async function handler(
     try {
       await client.sendEmail({
         From: "support@getboon.ai",
-        To: emailEvent.Recipient,
+        To: "tms.vivaldi@gmail.com",
         Subject: "Hello from Postmark",
         HtmlBody: "<strong>Hello</strong> dear Postmark user.",
         TextBody: "Hello from Postmark!",
