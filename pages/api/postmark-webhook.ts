@@ -9,43 +9,71 @@ type Data = {
 };
 
 type PostmarkEvent = {
-  From: string;
-  To: string;
-  Subject: string;
-  TextBody: string;
-  HtmlBody: string;
+  Metadata: {
+    example: string;
+    example_2: string;
+  };
+  RecordType: string;
+  FirstOpen: boolean;
+  Client: {
+    Name: string;
+    Company: string;
+    Family: string;
+  };
+  OS: {
+    Name: string;
+    Company: string;
+    Family: string;
+  };
+  Platform: string;
+  UserAgent: string;
+  ReadSeconds: number;
+  Geo: {
+    CountryISOCode: string;
+    Country: string;
+    RegionISOCode: string;
+    Region: string;
+    City: string;
+    Zip: string;
+    Coords: string;
+    IP: string;
+  };
+  MessageID: string;
   MessageStream: string;
+  ReceivedAt: string;
+  Tag: string;
+  Recipient: string;
 };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   if (req.method === "POST") {
-    // Parse the JSON body of the request
     const emailEvent: PostmarkEvent = req.body;
-
-    // Handle the email event
     console.log(emailEvent);
 
-    // Create an instance of the Postmark client and send an email
     var client = new postmark.ServerClient(
       "47b1320e-2a0f-4533-91a9-a2c065475c50"
     );
 
-    client.sendEmail({
-      From: "support@getboon.ai",
-      To: emailEvent.From,
-      Subject: "Hello from Postmark",
-      HtmlBody: "<strong>Hello</strong> dear Postmark user.",
-      TextBody: "Hello from Postmark!",
-      MessageStream: "outbound",
-    });
+    try {
+      await client.sendEmail({
+        From: "support@getboon.ai",
+        To: emailEvent.Recipient,
+        Subject: "Hello from Postmark",
+        HtmlBody: "<strong>Hello</strong> dear Postmark user.",
+        TextBody: "Hello from Postmark!",
+        MessageStream: "outbound",
+      });
 
-    // Send a response
-    res.status(200).json({ status: "Received" });
+      // Send the response when the email is successfully sent
+      res.status(200).json({ status: "Received" });
+    } catch (error) {
+      // Send a 500 - Internal Server Error response if sending the email fails
+      res.status(500).json({ error: "Failed to send email" });
+    }
   } else {
-    // If it's not a POST request, return 405 - Method Not Allowed
     res.status(405).json({ error: "Method not allowed" });
   }
 }
