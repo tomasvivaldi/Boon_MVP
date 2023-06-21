@@ -16,10 +16,18 @@ type Data = {
   error?: string;
 };
 
+type PostmarkAttachment = {
+  Content: string;
+  ContentLength: number;
+  Name: string;
+  ContentType: string;
+  ContentID: string;
+};
+
 type PostmarkEvent = {
   FromName: string;
   MessageStream: string;
-  From: string; //email
+  From: string;
   FromFull: {
     Email: string;
     Name: string;
@@ -57,7 +65,7 @@ type PostmarkEvent = {
     Name: string;
     Value: string;
   }[];
-  Attachments: any[];
+  Attachments: PostmarkAttachment[];
 };
 
 export default async function handler(
