@@ -383,13 +383,13 @@ export default async function handler(
                   },
                   po_number: emailData.orderNumber,
                   destination: {
-                    address: data.customerAddress,
+                    address: emailData.customerAddress,
                     appointment_end_time: "2023-06-28 11:00:00",
                     appointment_start_time: "2023-06-28 11:00:00",
                   },
-                  reference_number: data.orderNumber,
+                  reference_number: emailData.orderNumber,
                   carrier: "BTI",
-                  order_number: data.orderNumber,
+                  order_number: emailData.orderNumber,
                   customer: "CLOROX",
                   bill_of_lading_number: "00446008526541470",
                 };
