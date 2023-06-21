@@ -48,10 +48,42 @@ export default async function handler(
 
       console.log("Email sent successfully!");
 
+      console.log("Attempting to send data...");
+      const response = await fetch("https://boon-beta.onrender.com/api/loads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pickup: {
+            address: "1801 DOCTOR M.L.K. JR BLVD, STOCKTON, CA",
+            appointment_end_time: "2023-06-23 12:00:00",
+            appointment_start_time: "2023-06-23 11:00:00",
+          },
+          po_number: "1010408011",
+          destination: {
+            address: "121 Baker ST NW, ATLANTA, GA",
+            appointment_end_time: "2023-06-28 11:00:00",
+            appointment_start_time: "2023-06-28 11:00:00",
+          },
+          reference_number: "1010408011",
+          carrier: "BTI",
+          order_number: "1010408011",
+          customer: "CLOROX",
+          bill_of_lading_number: "00446008526541470",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send data");
+      }
+
+      console.log("Data sent successfully!");
+
       // Send the response when the email is successfully sent
       res.status(200).json({ status: "Received" });
     } catch (error) {
-      console.error("Failed to send email:", error);
+      console.error("Failed to send email or data:", error);
 
       // Send a 500 - Internal Server Error response if sending the email fails
       res.status(500).json({ error: "Failed to send email" });
@@ -61,3 +93,8 @@ export default async function handler(
     res.status(405).json({ error: "Method not allowed" });
   }
 }
+
+// Add call to parsio
+// Send the results to Mike
+
+//maybe have to change code 200 to 201
