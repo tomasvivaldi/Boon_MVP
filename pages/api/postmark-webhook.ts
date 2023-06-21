@@ -39,10 +39,12 @@ export default async function handler(
       console.log("Attempting to send email...");
       await client.sendEmail({
         From: "demo@getboon.ai",
-        To: "tms.vivaldi@gmail.com",
-        Subject: "Hello from Postmark",
-        HtmlBody: "<strong>Hello</strong> dear Postmark user.",
-        TextBody: "Hello from Postmark!",
+        To: emailEvent.Recipient,
+        Subject: "Order Confirmation",
+        HtmlBody:
+          "<h1>Order Confirmation</h1><p>Thank you for your order! </p><p>We're pleased to confirm that we have received your order and it's now being processed. You'll receive another email from us as soon as your items have shipped.</p>        <p>If you have any questions or need to make changes to your order, please feel free to reply to this email or call us at our customer service line.</p><p>Thank you again for your business!</p>    <p>Best regards,</p><p>Boon Team</p>",
+        TextBody:
+          "Thank you for your order!\n\nWe're pleased to confirm that we have received your order and it's now being processed. You'll receive another email from us as soon as your items have shipped.\n\nIf you have any questions or need to make changes to your order, please feel free to reply to this email or call us at our customer service line.\n\nThank you again for your business!\n\nBest regards,\n\nBoon Team",
         MessageStream: "outbound",
       });
 
