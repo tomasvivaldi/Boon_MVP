@@ -17,18 +17,47 @@ type Data = {
 };
 
 type PostmarkEvent = {
-  RecordType: string;
-  ServerID: number;
+  FromName: string;
   MessageStream: string;
-  MessageID: string;
-  Recipient: string;
-  Tag: string;
-  DeliveredAt: string;
-  Details: string;
-  Metadata: {
-    example: string;
-    example_2: string;
+  From: string; //email
+  FromFull: {
+    Email: string;
+    Name: string;
+    MailboxHash: string;
   };
+  To: string;
+  ToFull: {
+    Email: string;
+    Name: string;
+    MailboxHash: string;
+  }[];
+  Cc: string;
+  CcFull: {
+    Email: string;
+    Name: string;
+    MailboxHash: string;
+  }[];
+  Bcc: string;
+  BccFull: {
+    Email: string;
+    Name: string;
+    MailboxHash: string;
+  }[];
+  OriginalRecipient: string;
+  Subject: string;
+  MessageID: string;
+  ReplyTo: string;
+  MailboxHash: string;
+  Date: string;
+  TextBody: string;
+  HtmlBody: string;
+  StrippedTextReply: string;
+  Tag: string;
+  Headers: {
+    Name: string;
+    Value: string;
+  }[];
+  Attachments: any[];
 };
 
 export default async function handler(
@@ -45,9 +74,10 @@ export default async function handler(
 
     try {
       console.log("Attempting to send email...");
+      const sender = emailEvent.From;
       await client.sendEmail({
         From: "demo@getboon.ai",
-        To: emailEvent.Recipient,
+        To: sender,
         Subject: "Order Confirmation",
         HtmlBody:
           "<h1>Order Confirmation</h1><p>Thank you for your order! </p><p>We're pleased to confirm that we have received your order and it's now being processed. You'll receive another email from us as soon as your items have shipped.</p>        <p>If you have any questions or need to make changes to your order, please feel free to reply to this email or call us at our customer service line.</p><p>Thank you again for your business!</p>    <p>Best regards,</p><p>Boon Team</p>",
