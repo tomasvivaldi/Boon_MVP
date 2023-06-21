@@ -2,6 +2,14 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as postmark from "postmark";
+import winston from "winston";
+
+// Create a logger instance
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(), // Output logs to the console
+  ],
+});
 
 type Data = {
   status?: string;
