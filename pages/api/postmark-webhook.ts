@@ -123,7 +123,27 @@ export default async function handler(
         table1: [],
         table: [],
       };
-      const [data, setData] = useState(mockData);
+      let emailData = {
+        vendorName: "Missing",
+        vendorContact: "Missing",
+        vendorAddress: "Missing",
+        customerAddress: "Missing",
+        customerName: "Missing",
+        customerContact: "Missing",
+        orderNumber: "Missing",
+        pickupDate: "Missing",
+        pickupTime: "Missing",
+        dropoffDate: "Missing",
+        dropoffTime: "Missing",
+        loadDescription: "Missing",
+        shippingUnits: "Missing",
+        totalWeight: "Missing",
+        sealNumber: "Missing",
+        container: "Missing",
+        vin: "Missing",
+        table1: [["Missing", "Missing", "Missing"]],
+        table: [["Missing", "Missing", "Missing"]],
+      };
       // Extract base64 content from the first attachment
       let base64Content = emailEvent.Attachments[0].Content;
       // Decode the base64 content to a Blob
@@ -187,245 +207,198 @@ export default async function handler(
                 .then((parsedData) => {
                   console.log("Parsed document data", parsedData);
                   // Assuming the parsedData has fields like vendorName, orderNumber, etc.
-                  setData(() => {
-                    // Initialize default values
-                    const defaultData = {
-                      vendorName: "Missing",
-                      vendorContact: "Missing",
-                      vendorAddress: "Missing",
-                      customerAddress: "Missing",
-                      customerName: "Missing",
-                      customerContact: "Missing",
-                      orderNumber: "Missing",
-                      // quickbooksLocation: "Missing",
-                      pickupDate: "Missing",
-                      pickupTime: "Missing",
-                      dropoffDate: "Missing",
-                      dropoffTime: "Missing",
-                      loadDescription: "Missing",
-                      shippingUnits: "Missing",
-                      totalWeight: "Missing",
-                      sealNumber: "Missing",
-                      container: "Missing",
-                      vin: "Missing",
-                      table1: [
-                        ["Missing", "Missing", "Missing"],
-                        ["Missing", "Missing", "Missing"],
-                        ["Missing", "Missing", "Missing"],
-                      ],
-                      table: [
-                        ["Missing", "Missing", "Missing"],
-                        ["Missing", "Missing", "Missing"],
-                        ["Missing", "Missing", "Missing"],
-                      ],
-                    };
+                  // Find the respective fields in parsedData
+                  const vendorNameField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "VendorName"
+                  );
+                  const vendorContactField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Contact"
+                  );
+                  const vendorContactField2 = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "PHONE#"
+                  );
+                  const vendorAddressField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "VendorAddress"
+                  );
+                  const customerAddressField = parsedData.parsed.find(
+                    (field: { name: string }) =>
+                      field.name === "ShippingAddress"
+                  );
+                  const customerNameField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "CustomerName"
+                  );
+                  const customerContactField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "PHONE#2"
+                  );
+                  const orderNumberField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Order Numbers"
+                  );
+                  const orderNumberField2 = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Shipment Ref#"
+                  );
+                  const orderNumberField3 = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Order #"
+                  );
+                  // const quickbooksLocationField = parsedData.parsed.find(
+                  //   (field: { name: string }) =>
+                  //     field.name === "QuickBooks Location"
+                  // );
+                  const pickupDateField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "DATE"
+                  );
+                  const pickupTimeField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "pickupTime"
+                  );
+                  const dropoffDateField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "DATE2"
+                  );
+                  const dropoffTimeField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "dropoffTime"
+                  );
+                  const loadDescriptionField = parsedData.parsed.find(
+                    (field: { name: string }) =>
+                      field.name === "loadDescription"
+                  );
+                  const goodsDescriptionField = parsedData.parsed.find(
+                    (field: { name: string }) =>
+                      field.name === "GOODS DESCRIPTION"
+                  );
+                  const shippingUnitsField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "shippingUnits"
+                  );
+                  const shippingUnitsField2 = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "PIECES"
+                  );
+                  const totalWeightField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "totalWeight"
+                  );
+                  const sealNumberField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "SEAL"
+                  );
+                  const containerField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "CONTAINER"
+                  );
+                  const vinField = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "VIN"
+                  );
+                  const table1Field = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Table 1"
+                  );
+                  const table4Field = parsedData.parsed.find(
+                    (field: { name: string }) => field.name === "Table 4"
+                  );
 
-                    // Find the respective fields in parsedData
-                    const vendorNameField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "VendorName"
-                    );
-                    const vendorContactField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "Contact"
-                    );
-                    const vendorContactField2 = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "PHONE#"
-                    );
-                    const vendorAddressField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "VendorAddress"
-                    );
-                    const customerAddressField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "ShippingAddress"
-                    );
-                    const customerNameField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "CustomerName"
-                    );
-                    const customerContactField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "PHONE#2"
-                    );
-                    const orderNumberField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "Order Numbers"
-                    );
-                    const orderNumberField2 = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "Shipment Ref#"
-                    );
-                    const orderNumberField3 = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "Order #"
-                    );
-                    // const quickbooksLocationField = parsedData.parsed.find(
-                    //   (field: { name: string }) =>
-                    //     field.name === "QuickBooks Location"
-                    // );
-                    const pickupDateField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "DATE"
-                    );
-                    const pickupTimeField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "pickupTime"
-                    );
-                    const dropoffDateField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "DATE2"
-                    );
-                    const dropoffTimeField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "dropoffTime"
-                    );
-                    const loadDescriptionField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "loadDescription"
-                    );
-                    const goodsDescriptionField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "GOODS DESCRIPTION"
-                    );
-                    const shippingUnitsField = parsedData.parsed.find(
-                      (field: { name: string }) =>
-                        field.name === "shippingUnits"
-                    );
-                    const shippingUnitsField2 = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "PIECES"
-                    );
-                    const totalWeightField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "totalWeight"
-                    );
-                    const sealNumberField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "SEAL"
-                    );
-                    const containerField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "CONTAINER"
-                    );
-                    const vinField = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "VIN"
-                    );
-                    const table1Field = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "Table 1"
-                    );
-                    const table4Field = parsedData.parsed.find(
-                      (field: { name: string }) => field.name === "Table 4"
-                    );
-
-                    // Extract values from the found fields or use default values
-                    return {
-                      vendorName:
-                        vendorNameField?.value?.value || defaultData.vendorName,
-                      vendorContact:
-                        vendorContactField2?.value?.value ||
-                        vendorContactField?.value?.value ||
-                        defaultData.vendorContact,
-                      vendorAddress:
-                        vendorAddressField?.value?.content ||
-                        defaultData.vendorAddress,
-                      customerAddress:
-                        customerAddressField?.value?.content ||
-                        defaultData.customerAddress,
-                      customerName:
-                        customerNameField?.value?.value ||
-                        defaultData.vendorName,
-                      customerContact:
-                        // customerContactField2?.value?.value ||
-                        customerContactField?.value?.value ||
-                        defaultData.customerContact,
-                      orderNumber:
-                        orderNumberField3?.value?.value ||
-                        orderNumberField?.value?.value ||
-                        orderNumberField2?.value?.value ||
-                        defaultData.orderNumber,
-                      // quickbooksLocation:
-                      //   quickbooksLocationField?.value?.value ||
-                      //   defaultData.quickbooksLocation,
-                      pickupDate:
-                        pickupDateField?.value?.value || defaultData.pickupDate,
-                      pickupTime:
-                        pickupTimeField?.value?.value || defaultData.pickupTime,
-                      dropoffDate:
-                        dropoffDateField?.value?.value ||
-                        defaultData.dropoffDate,
-                      dropoffTime:
-                        dropoffTimeField?.value?.value ||
-                        defaultData.dropoffTime,
-                      loadDescription:
-                        goodsDescriptionField?.value?.value ||
-                        loadDescriptionField?.value?.value ||
-                        defaultData.loadDescription,
-                      shippingUnits:
-                        shippingUnitsField2?.value?.value ||
-                        shippingUnitsField?.value?.value ||
-                        defaultData.shippingUnits,
-                      totalWeight:
-                        totalWeightField?.value?.value ||
-                        defaultData.totalWeight,
-                      sealNumber:
-                        sealNumberField?.value?.value || defaultData.sealNumber,
-                      container:
-                        containerField?.value?.value || defaultData.container,
-                      vin: vinField?.value?.value || defaultData.vin,
-                      table1:
+                  // Extract values from the found fields or use default values
+                  return {
+                    vendorName:
+                      vendorNameField?.value?.value || emailData.vendorName,
+                    vendorContact:
+                      vendorContactField2?.value?.value ||
+                      vendorContactField?.value?.value ||
+                      emailData.vendorContact,
+                    vendorAddress:
+                      vendorAddressField?.value?.content ||
+                      emailData.vendorAddress,
+                    customerAddress:
+                      customerAddressField?.value?.content ||
+                      emailData.customerAddress,
+                    customerName:
+                      customerNameField?.value?.value || emailData.vendorName,
+                    customerContact:
+                      // customerContactField2?.value?.value ||
+                      customerContactField?.value?.value ||
+                      emailData.customerContact,
+                    orderNumber:
+                      orderNumberField3?.value?.value ||
+                      orderNumberField?.value?.value ||
+                      orderNumberField2?.value?.value ||
+                      emailData.orderNumber,
+                    // quickbooksLocation:
+                    //   quickbooksLocationField?.value?.value ||
+                    //   emailData.quickbooksLocation,
+                    pickupDate:
+                      pickupDateField?.value?.value || emailData.pickupDate,
+                    pickupTime:
+                      pickupTimeField?.value?.value || emailData.pickupTime,
+                    dropoffDate:
+                      dropoffDateField?.value?.value || emailData.dropoffDate,
+                    dropoffTime:
+                      dropoffTimeField?.value?.value || emailData.dropoffTime,
+                    loadDescription:
+                      goodsDescriptionField?.value?.value ||
+                      loadDescriptionField?.value?.value ||
+                      emailData.loadDescription,
+                    shippingUnits:
+                      shippingUnitsField2?.value?.value ||
+                      shippingUnitsField?.value?.value ||
+                      emailData.shippingUnits,
+                    totalWeight:
+                      totalWeightField?.value?.value || emailData.totalWeight,
+                    sealNumber:
+                      sealNumberField?.value?.value || emailData.sealNumber,
+                    container:
+                      containerField?.value?.value || emailData.container,
+                    vin: vinField?.value?.value || emailData.vin,
+                    table1:
+                      table4Field?.value ||
+                      table1Field?.value ||
+                      emailData.table1,
+                    table: (() => {
+                      const tableDataArray =
                         table4Field?.value ||
                         table1Field?.value ||
-                        defaultData.table1,
-                      table: (() => {
-                        const tableDataArray =
-                          table4Field?.value ||
-                          table1Field?.value ||
-                          defaultData.table1;
+                        emailData.table1;
 
-                        // If tableDataArray is not an array, return it as is
-                        if (!Array.isArray(tableDataArray)) {
-                          return tableDataArray;
-                        }
+                      // If tableDataArray is not an array, return it as is
+                      if (!Array.isArray(tableDataArray)) {
+                        return tableDataArray;
+                      }
 
-                        // Convert the array to a map
-                        const tableDataMap: { [key: string]: any } = {};
-                        for (const row of tableDataArray) {
-                          for (const cell of row) {
-                            if (cell && cell.name && cell.value) {
-                              tableDataMap[cell.name] = cell.value;
-                            }
+                      // Convert the array to a map
+                      const tableDataMap: { [key: string]: any } = {};
+                      for (const row of tableDataArray) {
+                        for (const cell of row) {
+                          if (cell && cell.name && cell.value) {
+                            tableDataMap[cell.name] = cell.value;
                           }
                         }
+                      }
 
-                        return tableDataMap;
-                      })(),
-                    };
-                  });
-                })
-                .catch((error) => console.log("Error parsing document", error));
+                      return tableDataMap;
+                    })(),
+                  };
+                });
             })
-            .catch((error) =>
-              console.log("Error fetching document data", error)
-            );
-        })
-        .catch((error) => console.log("Error uploading file", error));
+            .catch((error) => console.log("Error parsing document", error))
+            .then(async () => {
+              try {
+                console.log("Attempting to send email...");
+                const sender = emailEvent.From;
 
-      try {
-        console.log("Attempting to send email...");
-        const sender = emailEvent.From;
+                const parsedData: ParsedData = {
+                  pickup: {
+                    address: "1801 DOCTOR M.L.K. JR BLVD, STOCKTON, CA",
+                    appointment_end_time: "2023-06-23 12:00:00",
+                    appointment_start_time: "2023-06-23 11:00:00",
+                  },
+                  po_number: emailData.orderNumber,
+                  destination: {
+                    address: data.customerAddress,
+                    appointment_end_time: "2023-06-28 11:00:00",
+                    appointment_start_time: "2023-06-28 11:00:00",
+                  },
+                  reference_number: data.orderNumber,
+                  carrier: "BTI",
+                  order_number: data.orderNumber,
+                  customer: "CLOROX",
+                  bill_of_lading_number: "00446008526541470",
+                };
 
-        const parsedData: ParsedData = {
-          pickup: {
-            address: "1801 DOCTOR M.L.K. JR BLVD, STOCKTON, CA",
-            appointment_end_time: "2023-06-23 12:00:00",
-            appointment_start_time: "2023-06-23 11:00:00",
-          },
-          po_number: data.orderNumber,
-          destination: {
-            address: data.customerAddress,
-            appointment_end_time: "2023-06-28 11:00:00",
-            appointment_start_time: "2023-06-28 11:00:00",
-          },
-          reference_number: data.orderNumber,
-          carrier: "BTI",
-          order_number: data.orderNumber,
-          customer: "CLOROX",
-          bill_of_lading_number: "00446008526541470",
-        };
-
-        await client.sendEmail({
-          From: "demo@getboon.ai",
-          To: sender,
-          Subject: "Order Confirmation",
-          HtmlBody: `<h1>Order Confirmation</h1>
+                await client.sendEmail({
+                  From: "demo@getboon.ai",
+                  To: sender,
+                  Subject: "Order Confirmation",
+                  HtmlBody: `<h1>Order Confirmation</h1>
               <p>Thank you for your order! </p>
               <p>We're pleased to confirm that we have received your order and it's now being processed. You'll receive another email from us as soon as your items have shipped.</p>
               <p>Your order details are as follows: </p>
@@ -442,7 +415,7 @@ export default async function handler(
               <p>Thank you again for your business!</p>
               <p>Best regards,</p>
               <p>Boon Team</p>`,
-          TextBody: `Thank you for your order!\n
+                  TextBody: `Thank you for your order!\n
               We're pleased to confirm that we have received your order and it's now being processed. You'll receive another email from us as soon as your items have shipped.\n
               Your order details are as follows: \n
               Order number: ${parsedData.order_number}\n
@@ -458,37 +431,40 @@ export default async function handler(
               Thank you again for your business!\n
               Best regards,\n
               Boon Team`,
-          MessageStream: "outbound",
-        });
+                  MessageStream: "outbound",
+                });
 
-        console.log("Email sent successfully!");
+                console.log("Email sent successfully!");
 
-        console.log("Attempting to send data...");
-        const response = await fetch(
-          "https://boon-beta.onrender.com/api/loads",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(parsedData),
-          }
-        );
+                console.log("Attempting to send data...");
+                const response = await fetch(
+                  "https://boon-beta.onrender.com/api/loads",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(parsedData),
+                  }
+                );
 
-        if (!response.ok) {
-          throw new Error("Failed to send data");
-        }
+                if (!response.ok) {
+                  throw new Error("Failed to send data");
+                }
 
-        console.log("Data sent successfully!");
+                console.log("Data sent successfully!");
 
-        // Send the response when the email is successfully sent
-        res.status(200).json({ status: "Received" });
-      } catch (error) {
-        console.error("Failed to send email or data:", error);
+                // Send the response when the email is successfully sent
+                res.status(200).json({ status: "Received" });
+              } catch (error) {
+                console.error("Failed to send email or data:", error);
 
-        // Send a 500 - Internal Server Error response if sending the email fails
-        res.status(500).json({ error: "Failed to send email" });
-      }
+                // Send a 500 - Internal Server Error response if sending the email fails
+                res.status(500).json({ error: "Failed to send email" });
+              }
+            });
+        })
+        .catch((error) => console.log("Error fetching document data", error));
     } else {
       console.log("No file uploaded");
     }
@@ -500,6 +476,9 @@ export default async function handler(
   }
 }
 
+function then(arg0: () => void) {
+  throw new Error("Function not implemented.");
+}
 // Add call to parsio
 // Send the results to Mike
 
